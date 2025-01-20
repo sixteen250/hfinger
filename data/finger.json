@@ -390,7 +390,7 @@
         "logic": "and",
         "rule": ["weaver,e-mobile"]
     }, {
-        "cms": "ecology",
+        "cms": "泛微 OA (e-cology)",
         "method": "keyword",
         "location": "header",
         "logic": "and",
@@ -406,7 +406,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "and",
-        "rule": ["PbootSystem"]
+        "rule": ["PbootSystem","PbootCMS"]
     }, {
         "cms": "PbootCMS",
         "method": "keyword",
@@ -700,23 +700,11 @@
         "logic": "and",
         "rule": ["910523681"]
     }, {
-        "cms": "Dreamer CMS",
-        "method": "keyword",
-        "location": "header",
-        "logic": "and",
-        "rule": ["dreamer-cms"]
-    }, {
         "cms": "重庆佰鼎-佰鼎OA",
         "method": "keyword",
         "location": "body",
         "logic": "and",
         "rule": ["default.aspx","Style/Style.css","Skin2017","TxtUserPwd"]
-    }, {
-        "cms": "PbootCMS",
-        "method": "keyword",
-        "location": "header",
-        "logic": "and",
-        "rule": ["PbootCMS"]
     }, {
         "cms": "Swagger UI",
         "method": "keyword",
@@ -812,7 +800,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["xdaemon"]
+        "rule": ["XDaemon"]
     }, {
         "cms": "Leadsec-WAF",
         "method": "keyword",
@@ -1544,7 +1532,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["apache-coyote"]
+        "rule": ["Apache-Coyote"]
     }, {
         "cms": "OpenVPN",
         "method": "faviconhash",
@@ -2150,7 +2138,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["jetty"]
+        "rule": ["Jetty"]
     }, {
         "cms": "Jetty",
         "method": "keyword",
@@ -3039,6 +3027,12 @@
         "location": "body",
         "logic": "and",
         "rule": ["-1414475558"]
+    }, {
+        "cms": "Microsoft IIS",
+        "method": "keyword",
+        "location": "header",
+        "logic": "and",
+        "rule": ["IIS/"]
     }, {
         "cms": "Univention Portal",
         "method": "faviconhash",
@@ -5097,7 +5091,7 @@
         "logic": "and",
         "rule": ["phpstudy for windows"]
      }, {
-        "cms": "有WAF",
+        "cms": "WAF",
         "method": "keyword",
         "location": "header",
         "logic": "and",
@@ -5191,7 +5185,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "and",
-        "rule": ["drupal"]
+        "rule": ["Drupal"]
      }, {
         "cms": "Huawei user-login",
         "method": "keyword",
@@ -5815,7 +5809,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "and",
-        "rule": ["NSFOCUS"]
+        "rule": ["NSFOCUS", "NSFocus"]
     }, {
         "cms": "迪浪云OA",
         "method": "faviconhash",
@@ -6223,7 +6217,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "and",
-        "rule": ["cpsession"]
+        "rule": ["cpsession", "cprelogin"]
     }, {
         "cms": "LiteSpeed",
         "method": "keyword",
@@ -6385,7 +6379,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["Location: /solr/"]
+        "rule": ["/solr/"]
     }, {
         "cms": "Redmi 路由器",
         "method": "keyword",
@@ -6490,9 +6484,10 @@
         "rule": ["iOffice.net"]
     }, {
         "cms": "iOffice(红帆oa)",
-        "rule": ["iOffice(红帆oa)"],
+        "method": "keyword",
         "location": "header",
-        "method": "keyword"
+        "logic": "and",
+        "rule": ["iOffice", "/ioffice"]
     }, {
         "cms": "iOffice(红帆oa)",
         "method": "keyword",
@@ -7538,7 +7533,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["server: a2b webserver"]
+        "rule": ["A2B Webserver"]
     }, {
         "cms": "Aastra-5000",
         "method": "keyword",
@@ -7845,7 +7840,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["django-cms"]
+        "rule": ["django-cms", "django_language"]
     }, {
         "cms": "django CMS",
         "method": "faviconhash",
@@ -7979,7 +7974,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["server: wweb"]
+        "rule": ["Wweb"]
     }, {
         "cms": "AccVisio",
         "method": "keyword",
@@ -8099,7 +8094,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["Location: /login?refer=%2F","Set-Cookie: SKYLAR"]
+        "rule": ["/login?refer=%2F","SKYLAR"]
     }, {
         "cms": "shenri-elevator",
         "method": "keyword",
@@ -8489,7 +8484,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["x-awcache"]
+        "rule": ["x-awcache", "X-Awcache"]
     }, {
         "cms": "AdiMoney",
         "method": "keyword",
@@ -8579,13 +8574,13 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["aefsid"]
+        "rule": ["aefsid", "AEFCookies"]
     }, {
         "cms": "Advantech-LR77",
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["lr77-v2"]
+        "rule": ["LR77-"]
     }, {
         "cms": "Aethra-Telecommunications-OS",
         "method": "keyword",
@@ -8743,7 +8738,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["server: akamaighost","x-akamai-transformed","akamai-ip: "]
+        "rule": ["AkamaiGHost","X-Akamai-Transformed","Akamai-Ip"]
     }, {
         "cms": "Cloudflare",
         "method": "keyword",
@@ -8966,13 +8961,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["set-cookie: yundun_404"]
-    }, {
-        "cms": "Aliyun-Cloud-shield",
-        "method": "keyword",
-        "location": "header",
-        "logic": "or",
-        "rule": ["yundun"]
+        "rule": ["YUNDUN"]
     }, {
         "cms": "AliyunOSS",
         "method": "keyword",
@@ -9020,13 +9009,13 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["x-amz-error-"]
+        "rule": ["X-Amz-"]
     }, {
         "cms": "Bluetrum-CDN",
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["powered-by-chinacache"]
+        "rule": ["Powered-By-Chinacache"]
     }, {
         "cms": "Dnion-CDN",
         "method": "keyword",
@@ -9038,7 +9027,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["edgeprism"]
+        "rule": ["EdgePrism"]
     }, {
         "cms": "Fastly-CDN",
         "method": "keyword",
@@ -9080,7 +9069,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["nwss","tencent-cdn"]
+        "rule": ["NWSs","X-Tencent-Cd", "X-Nws-Log-Uuid", "Eo-Log-Uuid"]
     }, {
         "cms": "jQuery-official-website-CDN",
         "method": "keyword",
@@ -9104,7 +9093,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["ucloud/cdn"]
+        "rule": ["ucloud", "UCloud CDN", "X-UCloud-"]
     }, {
         "cms": "Verizon-CDN",
         "method": "keyword",
@@ -9112,11 +9101,11 @@
         "logic": "or",
         "rule": ["ecs (","ecd ("]
     }, {
-        "cms": "reyzar-CDN",
+        "cms": "Reyzar-CDN",
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["reyzar-cdn"]
+        "rule": ["Reyzar-CDN"]
     }, {
         "cms": "GoCDN",
         "method": "keyword",
@@ -9356,13 +9345,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["kooboocms"]
-    }, {
-        "cms": "PBOOTCMS",
-        "method": "keyword",
-        "location": "header",
-        "logic": "or",
-        "rule": ["set-cookie: pbootsystem="]
+        "rule": ["X-Kooboocms-"]
     }, {
         "cms": "taoCMS",
         "method": "keyword",
@@ -9476,7 +9459,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["X-Powered-By:PigCms.com"]
+        "rule": ["PigCms.com"]
     }, {
         "cms": "O2OCMS",
         "method": "keyword",
@@ -9596,7 +9579,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["server: yxlinkwaf"]
+        "rule": ["YxlinkWAF"]
     }, {
         "cms": "KS-WAF(知道创宇)",
         "method": "keyword",
@@ -9656,7 +9639,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["server: voole_cdn1.0"]
+        "rule": ["voole_cdn1.0", "Voole"]
     }, {
         "cms": "Western-Digital",
         "method": "keyword",
@@ -9668,6 +9651,42 @@
         "method": "keyword",
         "location": "header",
         "logic": "or",
-        "rule": ["server: ws-web-server"]
+        "rule": ["WS CDN Server", "WS-web-server", "X-Ws-Request-Id"]
+    }, {
+        "cms": "Kingsoft CDN",
+        "method": "keyword",
+        "location": "header",
+        "logic": "or",
+        "rule": ["Kingsoft CDN"]
+    }, {
+        "cms": "ASP.NET",
+        "method": "keyword",
+        "location": "header",
+        "logic": "or",
+        "rule": ["ASP.NET"]
+    }, {
+        "cms": "Java",
+        "method": "keyword",
+        "location": "header",
+        "logic": "or",
+        "rule": ["Java"]
+    }, {
+        "cms": "Element UI",
+        "method": "keyword",
+        "location": "body",
+        "logic": "or",
+        "rule": ["Element", "<el-"]
+    }, {
+        "cms": "Vite",
+        "method": "keyword",
+        "location": "body",
+        "logic": "or",
+        "rule": ["_vite_"]
+    }, {
+        "cms": "Vue",
+        "method": "keyword",
+        "location": "body",
+        "logic": "or",
+        "rule": ["@vue"]
     }]
 }

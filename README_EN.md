@@ -34,8 +34,18 @@ It is best to combine these methods to prevent secondary development systems fro
 
 - The total number of included products, web frameworks and CMS (based on the values ​​of different cms, fingerprints with the same name are only recorded once): **1177**
 - The total number of fingerprints (the reason for the small number is that the fingerprints have been optimized and merged, and the fingerprints of the same asset have been merged): **1412**
+- The rules in the fingerprint database are case-sensitive, and you need to pay attention to adding fingerprints by customization
 
 The soldiers are not numerous but refined, the same goes for the number of fingerprints. The total number of fingerprints is little significance. The key is the number of products, web frameworks and CMS that can be identified.
+
+#### Write rules
+
+The fingerprint database is located in the `finger.json` file, and the format is JSON. There are 5 fields in total:
+- **cms**: Product name, including CMS name, CDN name, etc
+- **method**: The matching method, the value of `keyword` or `faviconhash`, which means that the match is made by keyword or faviconhash, respectively, and the `location` field is ignored when the value is `faviconhash`
+- **location**: The matching position, with the values of `header`, `body`, and `title`, indicates the content in the header, body, and title of the matching response, respectively
+- **logic**: The matching logic, with the value of `and` or `or`, represents the AND and OR logic of the rule, respectively, and takes effect when the matching rule contains multiple conditions
+- **rule**: Matching rules, which contain multiple conditions, are split using `,` between conditions
 
 ## How to use
 
