@@ -5077,7 +5077,7 @@
         "method": "keyword",
         "location": "header",
         "logic": "and",
-        "rule": ["PHP/"]
+        "rule": ["PHP/", "PHPSESSID"]
      }, {
         "cms": "WPS 部署可视化平台",
         "method": "keyword",
@@ -9675,18 +9675,18 @@
         "method": "keyword",
         "location": "body",
         "logic": "or",
-        "rule": ["Element", "<el-"]
+        "rule": ["ElementPlus", "<el-"]
     }, {
         "cms": "Vite",
         "method": "keyword",
         "location": "body",
         "logic": "or",
-        "rule": ["_vite_"]
+        "rule": ["_vite_", "<script type=\"module\" crossorigin"]
     }, {
         "cms": "Vue",
         "method": "keyword",
         "location": "body",
         "logic": "or",
-        "rule": ["@vue"]
+        "rule": ["@vue", "<script type=\"module\" crossorigin", ".vue"]
     }]
 }
