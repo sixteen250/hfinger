@@ -1,63 +1,68 @@
 package output
 
 import (
-    "github.com/tealeg/xlsx"
-    "hfinger/config"
-    "strconv"
+	"hfinger/config"
+	"strconv"
+
+	"github.com/tealeg/xlsx"
 )
 
 func WriteXLSXOutput(filename string, results []config.Result) error {
-    file := xlsx.NewFile()
-    
-    // 创建 "Results" 汇总 sheet
-    summarySheet, err := file.AddSheet("Results")
-    if err != nil {
-        return err
-    }
+	file := xlsx.NewFile()
 
-    // 添加表头
-    header := summarySheet.AddRow()
-    header.AddCell().Value = "URL"
-    header.AddCell().Value = "CMS"
-    header.AddCell().Value = "Server"
-    header.AddCell().Value = "StatusCode"
-    header.AddCell().Value = "Title"
+	// 创建 "Results" 汇总 sheet
+	summarySheet, err := file.AddSheet("Results")
+	if err != nil {
+		return err
+	}
 
-    // 创建一个 map，用于按 CMS 分类存储结果
-    cmsSheets := make(map[string]*xlsx.Sheet)
+	// 添加表头
+	header := summarySheet.AddRow()
+	header.AddCell().Value = "URL"
+	header.AddCell().Value = "FinalURL"
+	header.AddCell().Value = "CMS"
+	header.AddCell().Value = "Server"
+	header.AddCell().Value = "StatusCode"
+	header.AddCell().Value = "Title"
 
-    for _, result := range results {
-        // 添加到汇总表
-        row := summarySheet.AddRow()
-        row.AddCell().Value = result.URL
-        row.AddCell().Value = result.CMS
-        row.AddCell().Value = result.Server
-        row.AddCell().Value = strconv.Itoa(result.StatusCode)
-        row.AddCell().Value = result.Title
+	// 创建一个 map，用于按 CMS 分类存储结果
+	cmsSheets := make(map[string]*xlsx.Sheet)
 
-        // 按 CMS 创建新 sheet，并添加记录
-        if _, exists := cmsSheets[result.CMS]; !exists {
-            cmsSheet, err := file.AddSheet(result.CMS)
-            if err != nil {
-                return err
-            }
-            cmsSheets[result.CMS] = cmsSheet
+	for _, result := range results {
+		// 添加到汇总表
+		row := summarySheet.AddRow()
+		row.AddCell().Value = result.URL
+		row.AddCell().Value = result.FinalURL
+		row.AddCell().Value = result.CMS
+		row.AddCell().Value = result.Server
+		row.AddCell().Value = strconv.Itoa(result.StatusCode)
+		row.AddCell().Value = result.Title
 
-            // 为新 sheet 添加表头
-            cmsHeader := cmsSheet.AddRow()
-            cmsHeader.AddCell().Value = "URL"
-            cmsHeader.AddCell().Value = "Server"
-            cmsHeader.AddCell().Value = "StatusCode"
-            cmsHeader.AddCell().Value = "Title"
-        }
+		// 按 CMS 创建新 sheet，并添加记录
+		if _, exists := cmsSheets[result.CMS]; !exists {
+			cmsSheet, err := file.AddSheet(result.CMS)
+			if err != nil {
+				return err
+			}
+			cmsSheets[result.CMS] = cmsSheet
 
-        // 添加到 CMS 分类表
-        cmsRow := cmsSheets[result.CMS].AddRow()
-        cmsRow.AddCell().Value = result.URL
-        cmsRow.AddCell().Value = result.Server
-        cmsRow.AddCell().Value = strconv.Itoa(result.StatusCode)
-        cmsRow.AddCell().Value = result.Title
-    }
+			// 为新 sheet 添加表头
+			cmsHeader := cmsSheet.AddRow()
+			cmsHeader.AddCell().Value = "URL"
+			cmsHeader.AddCell().Value = "FinalURL"
+			cmsHeader.AddCell().Value = "Server"
+			cmsHeader.AddCell().Value = "StatusCode"
+			cmsHeader.AddCell().Value = "Title"
+		}
 
-    return file.Save(filename)
+		// 添加到 CMS 分类表
+		cmsRow := cmsSheets[result.CMS].AddRow()
+		cmsRow.AddCell().Value = result.URL
+		cmsRow.AddCell().Value = result.FinalURL
+		cmsRow.AddCell().Value = result.Server
+		cmsRow.AddCell().Value = strconv.Itoa(result.StatusCode)
+		cmsRow.AddCell().Value = result.Title
+	}
+
+	return file.Save(filename)
 }

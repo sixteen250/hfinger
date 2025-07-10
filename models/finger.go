@@ -23,10 +23,10 @@ var (
 )
 
 func process(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool) {
-	processWithRedirectLimit(url, headers, resultsChannel, matchedCMS, mu, wg, errOccurred, 5) // 限制最多5次重定向
+	processWithRedirectLimit(url, url, headers, resultsChannel, matchedCMS, mu, wg, errOccurred, 5) // 原始URL和当前URL相同，限制最多5次重定向
 }
 
-func processWithRedirectLimit(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, maxRedirects int) {
+func processWithRedirectLimit(originalURL, currentURL string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, maxRedirects int) {
 	defer wg.Done()
 
 	// 检查重定向次数限制
@@ -41,11 +41,11 @@ func processWithRedirectLimit(url string, headers map[string]string, resultsChan
 	}
 	mu.Unlock()
 
-	resp, err := utils.Get(url, headers)
+	resp, err := utils.Get(currentURL, headers)
 	if err != nil {
 		mu.Lock()
 		if !*errOccurred {
-			*errOccurred = handleError(err, url)
+			*errOccurred = handleError(err, currentURL)
 		}
 		mu.Unlock()
 		return
@@ -65,7 +65,7 @@ func processWithRedirectLimit(url string, headers map[string]string, resultsChan
 	faviconpath := utils.FetchFavicon(body)
 	var faviconbody []byte
 	if faviconpath != "" && resp.StatusCode == http.StatusOK {
-		baseurl, _ := utils.GetBaseURL(url)
+		baseurl, _ := utils.GetBaseURL(currentURL)
 		faviconurl := baseurl + "/" + faviconpath
 		if strings.HasPrefix(faviconpath, "http://") || strings.HasPrefix(faviconpath, "https://") {
 			faviconurl = faviconpath
@@ -94,36 +94,37 @@ func processWithRedirectLimit(url string, headers map[string]string, resultsChan
 			cms := fingerprint.CMS
 			if _, loaded := matchedCMS.LoadOrStore(cms, true); !loaded {
 				result := config.Result{
-					URL:        url,
+					URL:        originalURL, // 原始URL
+					FinalURL:   currentURL,  // 最终URL
 					CMS:        cms,
 					Server:     server,
 					StatusCode: statuscode,
 					Title:      title,
 				}
 				resultsChannel <- result
-				color.Green("[%s] [+] [%s] [%s] [%d] [%s] [%s]", time.Now().Format("01-02 15:04:05"), url, cms, statuscode, server, title)
+				color.Green("[%s] [+] [%s] [%s] [%d] [%s] [%s]", time.Now().Format("01-02 15:04:05"), currentURL, cms, statuscode, server, title)
 			}
 		}
 	}
 	switch resp.StatusCode {
 	case http.StatusMovedPermanently, http.StatusFound, http.StatusSeeOther, http.StatusTemporaryRedirect:
 		location := resp.Header.Get("Location")
-		baseurl, _ := utils.GetBaseURL(url)
+		baseurl, _ := utils.GetBaseURL(currentURL)
 		if !strings.HasPrefix(location, "http://") && !strings.HasPrefix(location, "https://") {
 			location = baseurl + location
 		}
 		wg.Add(1)
-		go processWithRedirectLimit(location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred, maxRedirects-1) // 递减重定向次数
+		go processWithRedirectLimit(originalURL, location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred, maxRedirects-1) // 递减重定向次数
 	default:
 		return
 	}
 }
 
 func processWithInfo(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, mainTitle, mainServer *string, mainStatusCode *int, mainInfoSet *bool, mainInfoMu *sync.Mutex) {
-	processWithInfoAndRedirect(url, headers, resultsChannel, matchedCMS, mu, wg, errOccurred, mainTitle, mainServer, mainStatusCode, mainInfoSet, mainInfoMu, 5)
+	processWithInfoAndRedirect(url, url, headers, resultsChannel, matchedCMS, mu, wg, errOccurred, mainTitle, mainServer, mainStatusCode, mainInfoSet, mainInfoMu, 5)
 }
 
-func processWithInfoAndRedirect(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, mainTitle, mainServer *string, mainStatusCode *int, mainInfoSet *bool, mainInfoMu *sync.Mutex, maxRedirects int) {
+func processWithInfoAndRedirect(originalURL, currentURL string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, mainTitle, mainServer *string, mainStatusCode *int, mainInfoSet *bool, mainInfoMu *sync.Mutex, maxRedirects int) {
 	defer wg.Done()
 
 	// 检查重定向次数限制
@@ -138,11 +139,11 @@ func processWithInfoAndRedirect(url string, headers map[string]string, resultsCh
 	}
 	mu.Unlock()
 
-	resp, err := utils.Get(url, headers)
+	resp, err := utils.Get(currentURL, headers)
 	if err != nil {
 		mu.Lock()
 		if !*errOccurred {
-			*errOccurred = handleError(err, url)
+			*errOccurred = handleError(err, currentURL)
 		}
 		mu.Unlock()
 		return
@@ -162,7 +163,7 @@ func processWithInfoAndRedirect(url string, headers map[string]string, resultsCh
 	faviconpath := utils.FetchFavicon(body)
 	var faviconbody []byte
 	if faviconpath != "" && resp.StatusCode == http.StatusOK {
-		baseurl, _ := utils.GetBaseURL(url)
+		baseurl, _ := utils.GetBaseURL(currentURL)
 		faviconurl := baseurl + "/" + faviconpath
 		if strings.HasPrefix(faviconpath, "http://") || strings.HasPrefix(faviconpath, "https://") {
 			faviconurl = faviconpath
@@ -202,26 +203,27 @@ func processWithInfoAndRedirect(url string, headers map[string]string, resultsCh
 			cms := fingerprint.CMS
 			if _, loaded := matchedCMS.LoadOrStore(cms, true); !loaded {
 				result := config.Result{
-					URL:        url,
+					URL:        originalURL, // 原始URL
+					FinalURL:   currentURL,  // 最终URL
 					CMS:        cms,
 					Server:     server,
 					StatusCode: statuscode,
 					Title:      title,
 				}
 				resultsChannel <- result
-				color.Green("[%s] [+] [%s] [%s] [%d] [%s] [%s]", time.Now().Format("01-02 15:04:05"), url, cms, statuscode, server, title)
+				color.Green("[%s] [+] [%s] [%s] [%d] [%s] [%s]", time.Now().Format("01-02 15:04:05"), currentURL, cms, statuscode, server, title)
 			}
 		}
 	}
 	switch resp.StatusCode {
 	case http.StatusMovedPermanently, http.StatusFound, http.StatusSeeOther, http.StatusTemporaryRedirect:
 		location := resp.Header.Get("Location")
-		baseurl, _ := utils.GetBaseURL(url)
+		baseurl, _ := utils.GetBaseURL(currentURL)
 		if !strings.HasPrefix(location, "http://") && !strings.HasPrefix(location, "https://") {
 			location = baseurl + location
 		}
 		wg.Add(1)
-		go processWithRedirectLimit(location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred, maxRedirects-1) // 递减重定向次数
+		go processWithInfoAndRedirect(originalURL, location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred, mainTitle, mainServer, mainStatusCode, mainInfoSet, mainInfoMu, maxRedirects-1) // 递减重定向次数
 	default:
 		return
 	}
