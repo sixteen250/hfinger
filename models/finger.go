@@ -23,7 +23,16 @@ var (
 )
 
 func process(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool) {
+	processWithRedirectLimit(url, headers, resultsChannel, matchedCMS, mu, wg, errOccurred, 5) // 限制最多5次重定向
+}
+
+func processWithRedirectLimit(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, maxRedirects int) {
 	defer wg.Done()
+
+	// 检查重定向次数限制
+	if maxRedirects <= 0 {
+		return
+	}
 
 	mu.Lock()
 	if *errOccurred {
@@ -104,14 +113,23 @@ func process(url string, headers map[string]string, resultsChannel chan<- config
 			location = baseurl + location
 		}
 		wg.Add(1)
-		go process(location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred)
+		go processWithRedirectLimit(location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred, maxRedirects-1) // 递减重定向次数
 	default:
 		return
 	}
 }
 
 func processWithInfo(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, mainTitle, mainServer *string, mainStatusCode *int, mainInfoSet *bool, mainInfoMu *sync.Mutex) {
+	processWithInfoAndRedirect(url, headers, resultsChannel, matchedCMS, mu, wg, errOccurred, mainTitle, mainServer, mainStatusCode, mainInfoSet, mainInfoMu, 5)
+}
+
+func processWithInfoAndRedirect(url string, headers map[string]string, resultsChannel chan<- config.Result, matchedCMS *sync.Map, mu *sync.Mutex, wg *sync.WaitGroup, errOccurred *bool, mainTitle, mainServer *string, mainStatusCode *int, mainInfoSet *bool, mainInfoMu *sync.Mutex, maxRedirects int) {
 	defer wg.Done()
+
+	// 检查重定向次数限制
+	if maxRedirects <= 0 {
+		return
+	}
 
 	mu.Lock()
 	if *errOccurred {
@@ -203,7 +221,7 @@ func processWithInfo(url string, headers map[string]string, resultsChannel chan<
 			location = baseurl + location
 		}
 		wg.Add(1)
-		go process(location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred)
+		go processWithRedirectLimit(location, nil, resultsChannel, matchedCMS, mu, wg, errOccurred, maxRedirects-1) // 递减重定向次数
 	default:
 		return
 	}
